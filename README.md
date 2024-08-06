@@ -1,3 +1,5 @@
+[![Build](https://github.com/dhcgn/epub-to-md/actions/workflows/build.yml/badge.svg)](https://github.com/dhcgn/epub-to-md/actions/workflows/build.yml)
+
 # epub-to-md
 
 Tool to extract the text from epub files to markdown.

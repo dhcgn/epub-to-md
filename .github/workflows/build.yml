@@ -1,10 +1,12 @@
-name: Build
+name: Build and Release
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -37,3 +39,23 @@ jobs:
       with:
         name: epub-to-md-${{ matrix.goos }}-${{ matrix.goarch }}
         path: build/epub-to-md-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || '' }}
+
+  release:
+    if: github.event_name == 'release' && github.event.action == 'created'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      
+    - name: List files
+      run: ls -R
+      
+    - name: Upload Release Assets
+      uses: softprops/action-gh-release@v1
+      with:
+        files: epub-to-md-*/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
