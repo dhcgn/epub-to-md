@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Console",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/main.go",
+            "args": ["-file", "${workspaceFolder}/test-files/theodore-dreiser_the-titan.epub"]
+        },
+        {
+            "name": "File",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/main.go",
+            "args": ["-file", "${workspaceFolder}/test-files/theodore-dreiser_the-titan.epub", "-out", "${workspaceFolder}/output.md"]
+        }
+    ]
+}
