@@ -32,7 +32,8 @@ jobs:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
       run: |
-        go build -v -o build/epub-to-md-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || '' }}
+        VERSION=$(git describe --tags --always --dirty)
+        go build -v -ldflags="-X 'main.version=${VERSION}'" -o build/epub-to-md-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || '' }}
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3

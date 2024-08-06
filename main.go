@@ -11,13 +11,27 @@ import (
 	"github.com/taylorskalyo/goreader/epub"
 )
 
+const (
+	AppName = "epub-to-md"
+)
+
 var (
-	fileFlag = flag.String("file", "", "Path to the file to read")
-	outFlag  = flag.String("out", "", "Path to the output file")
+	fileFlag    = flag.String("file", "", "Path to the file to read")
+	outFlag     = flag.String("out", "", "Path to the output file")
+	versionFlag = flag.Bool("version", false, "Print version and exit")
+)
+
+var (
+	version = "dev" // set by ldflags at build time
 )
 
 func main() {
 	flag.Parse()
+
+	if *versionFlag {
+		fmt.Println(AppName + " " + version)
+		return
+	}
 
 	rc, err := epub.OpenReader(*fileFlag)
 	if err != nil {
@@ -25,12 +39,8 @@ func main() {
 	}
 	defer rc.Close()
 
-	// The rootfile (content.opf) lists all of the contents of an epub file.
 	// There may be multiple rootfiles, although typically there is only one.
 	book := rc.Rootfiles[0]
-
-	// Print book title.
-	// In main.go, replace the existing code after the book declaration with:
 
 	var output io.Writer
 
@@ -46,13 +56,15 @@ func main() {
 	}
 	// Print book title.
 	fmt.Fprintln(output, "# "+book.Title)
+	fmt.Fprintln(output, "")
+	fmt.Fprintln(output, "> Created with "+AppName+" "+version)
+	fmt.Fprintln(output, "> [https://github.com/dhcgn/epub-to-md](https://github.com/dhcgn/epub-to-md)")
+	fmt.Fprintln(output, "")
 
-	// List the IDs of files in the book's spine.
 	for _, item := range book.Spine.Itemrefs {
-		fmt.Fprintln(output, item.ID)
 		r, err := item.Open()
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
 		converter := md.NewConverter("", true, nil)
